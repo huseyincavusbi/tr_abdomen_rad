@@ -37,7 +37,11 @@ def patch_amp(dtype_name):
     import ultralytics.engine.validator as validator_mod
 
     if dtype_name == "bf16":
-        if not torch.cuda.is_bf16_supported():
+        try:
+            supported = torch.cuda.is_bf16_supported(including_emulation=False)
+        except TypeError:
+            supported = torch.cuda.is_bf16_supported()
+        if not supported:
             raise SystemExit("bf16 requested but not supported on this GPU; use --amp-dtype fp16")
         dtype = torch.bfloat16
     else:
