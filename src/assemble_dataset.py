@@ -12,9 +12,16 @@ ap.add_argument("--labels", type=Path, required=True)
 ap.add_argument("--out", type=Path, required=True)
 args = ap.parse_args()
 
+if not args.images.exists():
+    raise SystemExit(f"ERROR: images dir not found: {args.images}")
+if not args.labels.exists():
+    raise SystemExit(f"ERROR: labels dir not found: {args.labels}")
+
+created = 0
 for split in ["train", "val", "test"]:
     (args.out / "images" / split).mkdir(parents=True, exist_ok=True)
     (args.out / "labels" / split).mkdir(parents=True, exist_ok=True)
+    n = 0
     for lbl in (args.labels / split).glob("*.txt"):
         img = args.images / split / f"{lbl.stem}.jpg"
         if not img.exists():
@@ -25,6 +32,11 @@ for split in ["train", "val", "test"]:
             il.symlink_to(img)
         if not ll.exists():
             ll.symlink_to(lbl)
+        n += 1
+    print(f"{split}: {n} pairs")
+    created += n
+if created == 0:
+    raise SystemExit("ERROR: no image/label pairs matched")
 
 (args.out / "dataset.yaml").write_text(
     f"path: {args.out.resolve()}\n"
