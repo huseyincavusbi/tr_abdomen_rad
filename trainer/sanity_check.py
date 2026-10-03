@@ -124,6 +124,8 @@ def main():
                     draw.text((box[0] + 4, box[1] + 4), NAMES[c], fill=COLORS[c % len(COLORS)])
                 im.save(args.montage / f"{stem}.jpg", quality=88)
 
+    if sum(report["splits"][s]["images"] for s in SPLITS) == 0:
+        report["violations"].append("no images found in any split")
     if args.out:
         args.out.parent.mkdir(parents=True, exist_ok=True)
         args.out.write_text(json.dumps(report, indent=2))
