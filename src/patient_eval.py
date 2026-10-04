@@ -270,10 +270,15 @@ def cmd_predict(args):
     from ultralytics import YOLO
 
     files = collect_images(args.images, args.list)
+    if not files:
+        raise SystemExit("no images found for prediction")
+    source_list = Path(args.out).parent / f"{Path(args.out).stem}_source.txt"
+    source_list.parent.mkdir(parents=True, exist_ok=True)
+    source_list.write_text("\n".join(str(p) for p in files) + "\n")
     model = YOLO(args.model)
     rows = []
     results = model.predict(
-        source=[str(p) for p in files],
+        source=str(source_list),
         imgsz=args.imgsz,
         conf=args.conf,
         iou=args.iou,
