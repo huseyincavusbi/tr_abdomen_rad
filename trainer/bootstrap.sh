@@ -78,7 +78,7 @@ fi
 if [ ! -f "$WORK/annotations/slice_gates.csv" ] && [ ! -f "$WORK/dslabels/slice_gates.csv" ]; then
   echo "WARNING: slice_gates.csv missing (gating will be disabled)"
 fi
-python "$WORK/dslabels/assemble_dataset.py" \
+python "$WORK/src/assemble_dataset.py" \
   --images "$WORK/dl/yolo_dataset/images" \
   --labels "$WORK/dslabels/labels" \
   --out "$WORK/ds"
