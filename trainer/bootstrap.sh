@@ -86,7 +86,9 @@ python "$WORK/src/assemble_dataset.py" \
 echo "== [7/8] download negatives =="
 if [ ! -d "$WORK/negatives/images" ]; then
   mkdir -p "$WORK/negatives"
-  kaggle datasets download -d huseyincavus/abdomen-negatives -p "$WORK/negatives" --unzip -q
+  if ! kaggle datasets download -d huseyincavus/abdomen-negatives -p "$WORK/negatives" --unzip -q; then
+    echo "WARNING: negatives dataset unavailable; specificity will be skipped"
+  fi
   if [ -z "${KEEP_ARCHIVES:-}" ]; then rm -f "$WORK/negatives"/*.zip; fi
 else
   echo "already present, skipping"
