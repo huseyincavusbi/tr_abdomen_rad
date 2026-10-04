@@ -42,13 +42,19 @@ for split in val test; do
     --imgsz 1280 --conf 0.005 --max-det 30 --batch 16 --device 0
 done
 
-NEG=""
+NEG_DIR=""
 if [ -d "$WORK/negatives/images" ]; then
+  NEG_DIR="$WORK/negatives/images"
+elif ls "$WORK/negatives"/*.jpg >/dev/null 2>&1; then
+  NEG_DIR="$WORK/negatives"
+fi
+NEG=""
+if [ -n "$NEG_DIR" ]; then
   echo "== negative-cohort predictions =="
   python -u src/patient_eval.py predict --model "$BEST" \
-    --images "$WORK/negatives/images" --out "$WORK/pred/negatives.csv" \
+    --images "$NEG_DIR" --out "$WORK/pred/negatives.csv" \
     --imgsz 1280 --conf 0.005 --max-det 30 --batch 16 --device 0
-  NEG="--neg-pred $WORK/pred/negatives.csv --neg-images $WORK/negatives/images"
+  NEG="--neg-pred $WORK/pred/negatives.csv --neg-images $NEG_DIR"
 fi
 
 echo "== patient-level metrics =="
