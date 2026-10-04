@@ -2,7 +2,7 @@
 set -euo pipefail
 
 WORK=${WORK:-$HOME/abdomen}
-RUN_NAME=${RUN_NAME:-yolo11l-p2-1280}
+RUN_NAME=${RUN_NAME:-yolo26l-p2-1280}
 source "$WORK/venv/bin/activate"
 cd "$WORK"
 mkdir -p logs pred
@@ -11,14 +11,16 @@ TS=$(date +%Y%m%d_%H%M%S)
 echo "== smoke: 1 epoch, 1% train, full check of pipeline =="
 python -u trainer/train.py \
   --data "$WORK/ds/dataset.yaml" \
-  --model "$WORK/configs/yolo11l-p2.yaml" \
+  --model "$WORK/configs/yolo26l-p2.yaml" \
+  --weights yolo26l.pt \
   --epochs 1 --fraction 0.01 --batch 24 --save-period -1 \
   --name smoke-1280 --exist-ok 2>&1 | tee "logs/smoke_${TS}.log"
 
 echo "== full: 25 epochs, batch 24, imgsz 1280 =="
 python -u trainer/train.py \
   --data "$WORK/ds/dataset.yaml" \
-  --model "$WORK/configs/yolo11l-p2.yaml" \
+  --model "$WORK/configs/yolo26l-p2.yaml" \
+  --weights yolo26l.pt \
   --epochs 25 --batch 24 --save-period 5 \
   --name "$RUN_NAME" --exist-ok 2>&1 | tee "logs/full_${TS}.log"
 
