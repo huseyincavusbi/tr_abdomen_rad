@@ -42,6 +42,15 @@ for split in val test; do
     --imgsz 1280 --conf 0.005 --max-det 30 --batch 16 --device 0
 done
 
+NEG=""
+if [ -d "$WORK/negatives/images" ]; then
+  echo "== negative-cohort predictions =="
+  python -u src/patient_eval.py predict --model "$BEST" \
+    --images "$WORK/negatives/images" --out "$WORK/pred/negatives.csv" \
+    --imgsz 1280 --conf 0.005 --max-det 30 --batch 16 --device 0
+  NEG="--neg-pred $WORK/pred/negatives.csv --neg-images $WORK/negatives/images"
+fi
+
 echo "== patient-level metrics =="
 GATES=""
 if [ -f "$WORK/annotations/slice_gates.csv" ]; then
@@ -52,7 +61,7 @@ fi
 python -u src/patient_eval.py eval \
   --val-pred "$WORK/pred/val.csv" --test-pred "$WORK/pred/test.csv" \
   --val-images "$WORK/ds/images/val" --test-images "$WORK/ds/images/test" \
-  $GATES --score topk --topk 3 --grid --bootstrap 1000 \
+  $GATES $NEG --score topk --topk 3 --grid --bootstrap 1000 \
   --out "$WORK/eval_patient"
 
 echo "DONE: $WORK/eval_patient/report.json"
