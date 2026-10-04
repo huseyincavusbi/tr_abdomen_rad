@@ -6,7 +6,7 @@ MIN_DISK_GB=${MIN_DISK_GB:-150}
 mkdir -p "$WORK"
 cd "$WORK"
 
-echo "== [1/7] system packages =="
+echo "== [1/8] system packages =="
 missing=""
 command -v unzip >/dev/null 2>&1 || missing="$missing unzip"
 command -v pip3 >/dev/null 2>&1 || missing="$missing python3-pip"
@@ -20,7 +20,7 @@ else
   echo "system packages OK"
 fi
 
-echo "== [2/7] disk =="
+echo "== [2/8] disk =="
 avail_gb=$(df -Pk "$WORK" | awk 'NR==2{print int($4/1024/1024)}')
 echo "free: ${avail_gb} GB at $WORK"
 if [ "$avail_gb" -lt "$MIN_DISK_GB" ]; then
@@ -28,7 +28,7 @@ if [ "$avail_gb" -lt "$MIN_DISK_GB" ]; then
   exit 1
 fi
 
-echo "== [3/7] python env =="
+echo "== [3/8] python env =="
 if [ ! -d "$WORK/venv" ]; then python3 -m venv "$WORK/venv"; fi
 source "$WORK/venv/bin/activate"
 pip install -q -U pip wheel
@@ -44,14 +44,14 @@ if [ ! -f "$WORK/src/patient_eval.py" ]; then
   echo "WARNING: $WORK/src/patient_eval.py missing (needed for patient-level eval)"
 fi
 
-echo "== [4/7] kaggle credentials =="
+echo "== [4/8] kaggle credentials =="
 if [ ! -f "$HOME/.kaggle/kaggle.json" ] && [ -z "${KAGGLE_KEY:-}" ]; then
   echo "ERROR: place kaggle.json in ~/.kaggle/ or export KAGGLE_USERNAME + KAGGLE_KEY"
   exit 1
 fi
 chmod 600 "$HOME/.kaggle/kaggle.json" 2>/dev/null || true
 
-echo "== [5/7] download images (43 GB) =="
+echo "== [5/8] download images (43 GB) =="
 if [ ! -d "$WORK/dl/yolo_dataset/images/train" ]; then
   mkdir -p "$WORK/dl"
   kaggle datasets download -d huseyincavus/abdomen-prepared -p "$WORK/dl" --unzip -q
@@ -60,7 +60,7 @@ else
   echo "already present, skipping"
 fi
 
-echo "== [6/7] download labels =="
+echo "== [6/8] download labels =="
 if [ ! -d "$WORK/dslabels/labels/train" ]; then
   mkdir -p "$WORK/dslabels"
   kaggle datasets download -d huseyincavus/abdomen-yolo-labels -p "$WORK/dslabels" --unzip -q
@@ -83,7 +83,16 @@ python "$WORK/src/assemble_dataset.py" \
   --labels "$WORK/dslabels/labels" \
   --out "$WORK/ds"
 
-echo "== [7/7] sanity =="
+echo "== [7/8] download negatives =="
+if [ ! -d "$WORK/negatives/images" ]; then
+  mkdir -p "$WORK/negatives"
+  kaggle datasets download -d huseyincavus/abdomen-negatives -p "$WORK/negatives" --unzip -q
+  if [ -z "${KEEP_ARCHIVES:-}" ]; then rm -f "$WORK/negatives"/*.zip; fi
+else
+  echo "already present, skipping"
+fi
+
+echo "== [8/8] sanity =="
 python "$WORK/trainer/sanity_check.py" \
   --images "$WORK/ds/images" \
   --labels "$WORK/ds/labels" \
