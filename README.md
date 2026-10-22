@@ -16,6 +16,8 @@ Labels were rebuilt from the official annotations with source-aware joins. Fixed
 dataset issues: ×1280 coordinate scaling, 258 foreign labels, 5 degenerate boxes.
 The demo run uses a balanced, patient-disjoint subset — 10,764 train / 3,148 val / 2,828 test images. Training covered 6.8% of the positive slices (2.3% of all slices) and 6.8% of boxes; the full dataset was not used.
 
+The corrected labels contain 1,296 studies / 43,166 boxes; the published Table 1 reports 1,274 patients / 42,922 boxes (896/189/189). The +22 studies are mostly stones/AAA.
+
 ## Results
 
 | Metric | Val (36 patients) | Test (26 patients) |
@@ -94,5 +96,14 @@ annotations/  ground-truth exports and anatomical slice gates
 
 ## References
 
-- Erdoğan & Koç (2026), TR_ABDOMEN_RAD baseline.
-- TEKNOFEST 2026 TR_ABDOMEN_RAD dataset.
+**Method (baseline):**
+Erdoğan, H.M., Koç, U. Anatomically Localized Detection of Six Acute Abdominal
+Emergencies on CT Using Multi-window Deep Learning: Development and Validation.
+*Journal of Imaging Informatics in Medicine* (2026).
+https://doi.org/10.1007/s10278-026-02084-x
+
+**Dataset:**
+Koç, U., Akçapınar Sezer, E., Özkaya, Y.A., et al. Elevating healthcare through
+artificial intelligence: analyzing the abdominal emergencies data set
+(TR_ABDOMEN_RAD_EMERGENCY) at TEKNOFEST-2022. *European Radiology* 34,
+3588–3597 (2024). https://doi.org/10.1007/s00330-023-10391-y
