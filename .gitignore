@@ -5,4 +5,5 @@ data/
 output/
 runs/
 *.pt
-notebooks/
+notebooks/kernel-metadata.json
+notebooks/**/kernel-metadata.json
