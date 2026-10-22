@@ -14,7 +14,7 @@ kidney/ureteral stone, acute diverticulitis, AAA/dissection.
 
 Labels were rebuilt from the official annotations with source-aware joins. Fixed
 dataset issues: ×1280 coordinate scaling, 258 foreign labels, 5 degenerate boxes.
-The demo run uses a balanced, patient-disjoint subset (10,764 / 3,568 / 2,828 images).
+The demo run uses a balanced, patient-disjoint subset — 10,764 train / 3,148 val / 2,828 test images. Training covered 6.8% of the positive slices (2.3% of all slices) and 6.8% of boxes; the full dataset was not used.
 
 ## Results
 
@@ -32,8 +32,8 @@ YOLO26-S-P2 · 9.67 M params · 1280 px · 10 epochs · bf16 on one 16 GB GPU.
 Bootstrap CIs over 1,000 patient resamples. Weakest class: diverticulitis
 (AUROC 0.692); strongest: AAA (1.000).
 
-*Demo-scale run, not a paper reproduction: 9% of the data, 10 epochs, 26 test
-patients. Specificity is not evaluated.*
+*Demo-scale run, not a paper reproduction: 10 epochs on 6.8% of the positive
+slices (2.3% of all slices), 26 test patients. Specificity is not evaluated.*
 
 ## Approach
 
