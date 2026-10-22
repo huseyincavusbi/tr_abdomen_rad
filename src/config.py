@@ -118,7 +118,3 @@ RANDOM_SEED = 42
 
 # Anatomic envelope: ±40mm around organ boundary slices
 ENVELOPE_MM = 40
-
-# Server (RX 9060 XT 16GB)
-SERVER_IMGSZ_640 = 640
-SERVER_IMGSZ_1280 = 1280
